@@ -3,6 +3,7 @@
  */
 
 import java.util.Scanner;
+import java.util.ArrayList;
 
 public class NameScrambler {
 
@@ -14,95 +15,77 @@ public class NameScrambler {
         String word = stringScanner.nextLine().toLowerCase();
 
         //System.out.println(numbers(5)); // infinite loop
-        iterativeAnagram(word);
+        //iterativeAnagram(word);
+        //recursiveAnagram(word);
+
+        ArrayList<String> anagrams = new ArrayList<>();
+        anagrams = webRecursiveAnagrams(word);
+        for (int i = 0; i < anagrams.size(); ++i) {
+            System.out.println(anagrams.get(i));
+        }
+        System.out.println("Size: " + anagrams.size());
+
+        stringScanner.close();
     }
 
-    static String recursiveAnagram(String word) {
-        if (word.equals("")) {
-            return word;
+    // Rewrite of a javascript program found at
+    // http://math.stackexchange.com/questions/876352/how-can-i-calculate-the-total-number-of-possible-anagrams-for-a-set-of-letters
+    static ArrayList<String> webRecursiveAnagrams(String word) {
+        ArrayList<String> generatedAnagrams = new ArrayList<>();
+
+        if (word.length() < 2) {
+            generatedAnagrams.add(word);
+            return generatedAnagrams;
+
         } else {
-            return word.charAt(0) + word.substring(1,word.length());
+            String before, focus, after, newEntry, shortWord;
+            ArrayList<String> subGeneratedAnagrams = new ArrayList<>();
+
+            for (int i = 0; i < word.length(); ++i) {
+
+
+                before = word.substring(0, i);
+                focus = word.substring(i, i + 1);
+                after = word.substring(i + 1, word.length());
+
+                shortWord = before + after;
+
+                /* Some printed statements to help with understanding how the loops work
+                System.out.println("word: " + word);
+                System.out.println("word len: " + word.length());
+                System.out.println("i: " + i);
+                System.out.println("before: " + before);
+                System.out.println("focus: " + focus);
+                System.out.println("after: " + after);
+                System.out.println("short word: " + shortWord);
+                System.out.println("");
+                */
+
+                subGeneratedAnagrams = webRecursiveAnagrams(shortWord);
+
+                for (int j = 0; j < subGeneratedAnagrams.size(); ++j) {
+                    newEntry = focus + subGeneratedAnagrams.get(j);
+                    generatedAnagrams.add(newEntry);
+                }
+            }
+            return generatedAnagrams;
         }
     }
 
-    // Attempting to simplify recursiveAnagram
-    static String numbers(int num) {
-        // infinite loop
+    // does not work
+    static void recursiveAnagram(String word) {
+
         String result = "";
-        if (num == 1) {
-            result += 1;
-        } else {
-            result += num;
-            for (int i = 0; i < num; ++i) {
-                result += numbers(num - i);
-            }
 
-        }
+        for (int i = 0; result.length() < word.length(); ++i) {
 
-        return result;
-    }
-
-
-    // each character needs to loop through all the other characters except the one it is
-    static void iterativeAnagram(String combined) {
-
-        String result;
-
-        for (int i = 0; i < combined.length(); ++i) {
-            result = "";
-            result += combined.charAt(i);
-
-            for (int j = 0; j < combined.length(); ++j) {
-                if (j != i) {
-                    result += combined.charAt(j);
+            for (int counter = 0, j = i; result.length() < word.length(); ++counter, ++j) {
+                if (j == word.length() - 1) {
+                    j = 0;
                 }
-
-                for (int k = 0; k < combined.length(); ++k) {
-                    if (k != j && k != i) {
-                        result += combined.charAt(k);
-                    }
-                }
-            }
-        }
-
-    }
-
-    static void tryTwo(String combined) {
-
-        String result;
-
-        for (int i = 0; i < combined.length(); ++i) {
-            result = "";
-            result += combined.charAt(i);
-            for (int j = 0 + i; j < combined.length(); ++j) {
-                int newCounter = j;
-                if (newCounter != i) {
-                    result += combined.charAt(newCounter);
-                }
-                if (newCounter >= combined.length()) {
-                    newCounter = 0;
-                }
-            }
-            System.out.println(result);
-
-        }
-    }
-
-
-    static void tryOne(String combined) {
-
-        String result;
-        char[] combinedChar = combined.toCharArray();
-
-        for (int i = 0; i < combinedChar.length; ++i) {
-            result = "";
-            result += combinedChar[i];
-            for (int j = combinedChar.length - 1; j > 0; --j) {
-                result += combinedChar[j];
+                result += word.charAt(j);
             }
             System.out.println(result);
         }
     }
-
-
 }
