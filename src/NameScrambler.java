@@ -10,37 +10,41 @@ public class NameScrambler {
 
         Scanner stringScanner = new Scanner(System.in);
 
-        System.out.print("Enter name 1: ");
-        String name1 = stringScanner.nextLine().toLowerCase();
-        System.out.print("Enter name 2: ");
-        String name2 = stringScanner.nextLine().toLowerCase();
+        System.out.print("Enter your word: ");
+        String word = stringScanner.nextLine().toLowerCase();
 
-        String combined = name1 + name2;
-        char[] name1Char = name1.toCharArray();
-        char[] name2Char = name2.toCharArray();
-        int combinedLength = name1.length() + name2.length();
-        char[] combinedChar = combined.toCharArray();
-
-        //tryOne(combined);
-        //tryTwo(combined);
-        //tryThree(combined);
-        System.out.println(tryFour(combined));
-
+        //System.out.println(numbers(5)); // infinite loop
+        iterativeAnagram(word);
     }
 
-
-
-    static String tryFour(String combined) {
-        if (combined.length() == 1) {
-            return combined;
+    static String recursiveAnagram(String word) {
+        if (word.equals("")) {
+            return word;
         } else {
-
-            return tryFour(combined.substring(combined.length()-1));
+            return word.charAt(0) + word.substring(1,word.length());
         }
     }
-    // each character needs to loop through all the other characters except the one it is
 
-    static void tryThree(String combined) {
+    // Attempting to simplify recursiveAnagram
+    static String numbers(int num) {
+        // infinite loop
+        String result = "";
+        if (num == 1) {
+            result += 1;
+        } else {
+            result += num;
+            for (int i = 0; i < num; ++i) {
+                result += numbers(num - i);
+            }
+
+        }
+
+        return result;
+    }
+
+
+    // each character needs to loop through all the other characters except the one it is
+    static void iterativeAnagram(String combined) {
 
         String result;
 
